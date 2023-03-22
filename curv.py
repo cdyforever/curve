@@ -2,6 +2,7 @@ import numpy as np
 import math
 from collections import OrderedDict
 import sys
+sys.path.append('D:/Project/calligraphy-evaluation-algorithm')
 sys.path.append('E:/Project/calligraphy-evaluation-algorithm')
 from calligraphy_evaluation.functions.preprocess import WritingData
 from calligraphy_evaluation.functions.preprocess.custom_type.feature import StrokeFeature

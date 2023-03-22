@@ -42,6 +42,10 @@ def track_sample_hist(track_array, sample_num):
     对点集进行曲线拟合和等间隔采样，获取采样后的直方图 (y_hist)
     """
     track_array = np.unique(track_array, axis=0)
+    # 长度不足4时，如下处理
+    if len(track_array) < 4:
+        sample_hist = np.zeros((1, sample_num), dtype=np.float32)
+        return
     track_x_list = track_array[:, 0].tolist()
     track_y_list = track_array[:, 1].tolist()
     track_x_start, track_x_end = track_x_list[0], track_x_list[-1]
@@ -58,7 +62,6 @@ def horizontal_track(track_array, matrix):
     """
     将原始点集旋转至水平，过滤近邻点，并保证点集的方向一致
     """
-    print("origin ", track_array)
     track_length = len(track_array)
     track_array_xyb = np.hstack([track_array, np.ones((track_length, 1))])
     horizon_track_array = np.matmul(track_array_xyb, matrix)

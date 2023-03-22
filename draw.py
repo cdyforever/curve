@@ -1,5 +1,6 @@
 import os
 import sys
+sys.path.append('D:/Project/calligraphy-evaluation-algorithm')
 sys.path.append('E:/Project/calligraphy-evaluation-algorithm')
 from calligraphy_evaluation.config import MODEL_DIR
 from calligraphy_evaluation.core import _EvaluateWriting
@@ -136,6 +137,7 @@ class inter:
                 std_length = std_stro_feat.length
                 std_frag_ratio = s_segs_ratio[i]
                 std_frag_length = std_length * std_frag_ratio
+                print(u_segs_ratio, user_stro_feat.length)
                 delta_curv, curv_label = compute_bend(user_curv=u_segs_curv[i], 
                                                     std_curv=s_segs_curv[i],
                                                     frag_length=std_frag_length,

@@ -4,6 +4,7 @@ from pymongo import MongoClient
 import sys
 import numpy as np
 from bson.objectid import ObjectId
+sys.path.append('D:/Project/calligraphy-evaluation-algorithm')
 sys.path.append('E:/Project/calligraphy-evaluation-algorithm')
 from calligraphy_evaluation.functions.preprocess.parser import ParseWriting
 from calligraphy_evaluation.functions.preprocess.custom_type.writing import WritingData
