@@ -137,12 +137,12 @@ class inter:
                 std_length = std_stro_feat.length
                 std_frag_ratio = s_segs_ratio[i]
                 std_frag_length = std_length * std_frag_ratio
-                print(u_segs_ratio, user_stro_feat.length)
                 delta_curv, curv_label = compute_bend(user_curv=u_segs_curv[i], 
                                                     std_curv=s_segs_curv[i],
                                                     frag_length=std_frag_length,
                                                     seg_multi=ratio)
                 self.grade.append(grade_func(delta_curv=delta_curv))
+            print("final grad : ", self.grade)
             if min(self.grade) < 0.4:
                 saveFlag = "B"
             elif min(self.grade) < 0.6:

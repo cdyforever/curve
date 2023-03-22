@@ -45,7 +45,7 @@ def track_sample_hist(track_array, sample_num):
     # 长度不足4时，如下处理
     if len(track_array) < 4:
         sample_hist = np.zeros((1, sample_num), dtype=np.float32)
-        return
+        return sample_hist
     track_x_list = track_array[:, 0].tolist()
     track_y_list = track_array[:, 1].tolist()
     track_x_start, track_x_end = track_x_list[0], track_x_list[-1]
