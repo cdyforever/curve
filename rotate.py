@@ -41,7 +41,8 @@ def track_sample_hist(track_array, sample_num):
     """
     对点集进行曲线拟合和等间隔采样，获取采样后的直方图 (y_hist)
     """
-    track_array = np.unique(track_array, axis=0)
+    _, inds = np.unique(track_array[:, 0], return_index=True)
+    track_array = track_array[inds]
     # 长度不足4时，如下处理
     if len(track_array) < 4:
         sample_hist = np.zeros((1, sample_num), dtype=np.float32)
