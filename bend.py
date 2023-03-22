@@ -71,13 +71,4 @@ def compute_bend(user_curv, std_curv, frag_length, seg_multi = 1.0,
     # curv_status_label = triple_label(diff_std, curv_status_t)
     # if curv_fit_label is True:
     curv_label = None
-    # else:
-    #     if curv_status_label is None:
-    #         curv_label = 'shake'
-    #     elif curv_status_label == 'more':
-    #         curv_label = 'more'
-    #     elif curv_status_label == 'less':
-    #         curv_label = 'less'
-    #     else:
-    #         curv_label = None
     return curv_result, curv_label
