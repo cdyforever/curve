@@ -19,6 +19,12 @@ from curv import GetStrokeFeature
 from grade import grade_func
 from bend import compute_bend, STROKE_SAMPLE_NUM
 
+stroke_ids_dict = {}
+idx = 0
+for key, value in STROKE_SAMPLE_NUM.items():
+    stroke_ids_dict[key] = idx
+    idx += 1
+
 def load_app_data_json(file_path):
     with open(file_path, 'rb') as f:
         app_data = json.load(f)
@@ -34,7 +40,13 @@ class inter:
         self.size = 1024
         return
     
-    def drawv2(self, saveFlag):
+    def drawv2(self, saveFlag, save_sub_dir):
+        save_dir = os.path.join("result", save_sub_dir)
+        if not os.path.exists(save_dir):
+            os.mkdir(save_dir)
+        save_x_dir = os.path.join(save_dir, saveFlag)
+        if not os.path.exists(save_x_dir):
+            os.mkdir(save_x_dir)
         empty = np.ones((1024, 1024, 3), dtype=np.uint8) * 255
         mat = self.user_mat
         mat = 255 - mat
@@ -47,7 +59,7 @@ class inter:
         for idx in range(len(self.grade)):
             grade = self.grade[idx]
             cv2.putText(empty, str(int(grade * 100)), (100, 300 + idx * 100), cv2.FONT_HERSHEY_SIMPLEX, 2.0, (0, 0, 255), 3)
-        savefile = os.path.join("result", saveFlag , self.savename)
+        savefile = os.path.join(save_x_dir, self.savename)
         cv2.imwrite(savefile, empty)
         return empty
     
@@ -117,16 +129,14 @@ class inter:
         for idx, (user_stro_feat, std_stro_feat, stroke_label) in \
                 enumerate(zip(user_strokes_feat, std_strokes_feat, strokes_label)):
             m_status, m_segs, m_result, head_status, rear_status = \
-                self.eval._get_match_status(user_stro_feat, std_stro_feat, stroke_label)
+                self.eval._get_match_status(user_stro_feat, std_stro_feat, stroke_label)            
             u_segs_ratio, u_segs_radian, u_segs_curv, s_segs_ratio, s_segs_radian, s_segs_curv = m_result
             self.user_mat = user_wd.stacked_mat[idx]
             self.std_mat = std_wd.stacked_mat[idx]
             ratios = STROKE_SAMPLE_NUM[stroke_label]
             self.savename = string_id + "_{}.jpg".format(idx)
             self.grade = []
-            # print(u_segs_ratio)
-            # print(stroke_label)
-            # print(ratios)
+            save_sub_dir = str(stroke_ids_dict[stroke_label])
             if m_status == "mismatched":
                 continue
             for i in range(len(u_segs_curv)):
@@ -134,24 +144,24 @@ class inter:
                     ratio = 0
                 else:
                     ratio = ratios[i]
+                user_length = user_stro_feat.length
                 std_length = std_stro_feat.length
+                user_frag_ratio = u_segs_ratio[i]
                 std_frag_ratio = s_segs_ratio[i]
                 std_frag_length = std_length * std_frag_ratio
+                user_frag_length = user_length * user_frag_ratio
+                frag_length = max(std_frag_length, user_frag_length)
                 delta_curv, curv_label = compute_bend(user_curv=u_segs_curv[i], 
                                                     std_curv=s_segs_curv[i],
-                                                    frag_length=std_frag_length,
+                                                    frag_length=frag_length,
                                                     seg_multi=ratio)
                 self.grade.append(grade_func(delta_curv=delta_curv))
             print("final grad : ", self.grade)
-            if min(self.grade) < 0.4:
+            if min(self.grade) < 0.6:
                 saveFlag = "B"
-            elif min(self.grade) < 0.6:
-                saveFlag = "NG"
-            elif min(self.grade) < 0.8:
-                saveFlag = "NB"
             else:
                 saveFlag = "G"
-            self.drawv2(saveFlag)
+            self.drawv2(saveFlag, save_sub_dir)
         return
 
 

@@ -1,21 +1,21 @@
 import numpy as np
 import math
 
-STROKE_SAMPLE_NUM = {'撇': [0.25], '点': [0.1], '横': [1], '捺': [0.25], '竖': [1], 
-                 '提画': [0.5, 0.1], '卧钩': [0.25, 0.1], '反捺': [0.1], '右点': [0.1], 
+STROKE_SAMPLE_NUM = {'撇': [0.25], '点': [0.25], '横': [1], '捺': [0.25], '竖': [1], 
+                 '提画': [0.5, 0.25], '卧钩': [0.25, 0.25], '反捺': [0.25], '右点': [0.25], 
                  '垂露竖': [1], '左点': [0.1], '平捺': [0.25], '平撇': [0.25], '弯钩': [0.25, 0.1], 
                  '悬针竖': [1], '提': [0.5], '撇折': [0.25, 0.25], 
                  '撇点': [0.25, 0.1], '斜捺': [0.25], '斜撇': [0.25], '斜钩': [0.25, 0.1], 
-                 '横折': [0.5, 0.5], '横折弯': [0.5, 0.25, 0.25], '横折弯钩': [0.5, 0.25, 0.25, 0.1], 
+                 '横折': [0.5, 0.25], '横折弯': [0.5, 0.25, 0.25], '横折弯钩': [0.5, 0.25, 0.25, 0.1], 
                  '横折折': [0.5, 0.25, 0.25], '横折折折': [0.5, 0.25, 0.25, 0.25], 
                  '横折折折钩': [0.5, 0.25, 0.25, 0.25, 0.1], '横折折撇': [0.5, 0.25, 0.25, 0.25], 
                  '横折提': [0.5, 0.25, 0.25], '横折钩': [0.5, 0.25, 0.1], 
                  '横撇': [0.5, 0.25], '横撇弯钩': [0.5, 0.25, 0.25, 0.1], '横斜钩': [0.5, 0.25, 0.1], 
                  '横钩': [0.5, 0.1], '短撇': [0.25], '短横': [1], '短竖': [1], 
-                 '竖弯': [0.5, 0.25], '竖弯钩': [0.5, 0.25, 0.1], '竖折': [0.5, 0.5], 
+                 '竖弯': [0.5, 0.25], '竖弯钩': [0.8, 0.25, 0.1], '竖折': [0.5, 0.5], 
                  '竖折折': [0.5, 0.25, 0.25], '竖折折钩': [0.5, 0.25, 0.25, 0.1], 
                  '竖折撇': [0.5, 0.25, 0.25], '竖提': [0.5, 0.2], 
-                 '竖撇': [0.25], '竖钩': [0.5, 0.1], '长横': [1]}
+                 '竖撇': [0.25], '竖钩': [0.8, 0.1], '长横': [1]}
 
 
 def triple_label(value, thresh):
@@ -26,8 +26,9 @@ def triple_label(value, thresh):
     else:
         return None
 
-def norm_curvature(curvature):
+def norm_curvature(curvature, t=0.015):
     curvature_filtered = curvature - np.mean(curvature)
+    curvature_filtered[np.where(np.abs(curvature_filtered) < t)] = 0
     return curvature_filtered
 
 def compute_bend(user_curv, std_curv, frag_length, seg_multi = 1.0,
@@ -48,15 +49,15 @@ def compute_bend(user_curv, std_curv, frag_length, seg_multi = 1.0,
             curv_status_label: 弯曲度状态:过于弯曲、过于笔直、锯齿('more'/'less'/None)
     """
     
+    
     # print("user curv ", user_curv)
-    # print("std curv ", std_curv)
     user_curv = norm_curvature(user_curv)
     # print("frag_length : ", frag_length)
     std_curv = norm_curvature(std_curv)
-    #diff_std = np.std(user_curv) - np.std(std_curv)
+    diff_std = np.std(user_curv) - np.std(std_curv)
     # print("diff result : ", user_curv - std_curv)
-    # print(user_curv)
-    # print(std_curv)
+    # print("user curv ", user_curv)
+    # print("user std ", np.std(user_curv))
     delta_curv_v1 = np.sum(np.abs(user_curv - std_curv))
     # print("user std delta is : ", delta_curv_v1)
     delta_curv_v2 = np.sum(np.abs(user_curv))
