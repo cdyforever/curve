@@ -143,7 +143,7 @@ class inter:
                 if i >= len(ratios):
                     ratio = 0
                 else:
-                    ratio = ratios[i]
+                    ratio = 1.0
                 user_length = user_stro_feat.length
                 std_length = std_stro_feat.length
                 user_frag_ratio = u_segs_ratio[i]
