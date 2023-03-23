@@ -55,6 +55,8 @@ class GetStrokeCurvature(object):
         if len(track) <= 1:
             return None
         seg_track_xy = track[:, ::-1]
+        if (seg_track_xy[0] == seg_track_xy[-1]).all():
+            return np.zeros((1, 20), dtype=np.float32)
         matrix = get_rotation_matrix(seg_track_xy)
         seg_horizon = horizontal_track(seg_track_xy, matrix)
         curv_hist = track_sample_hist(seg_horizon, 20)

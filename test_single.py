@@ -10,7 +10,7 @@ collection_list = db.list_collection_names()
 mycol = db["UserChar_new"]
 ids = mycol.distinct("_id")
 
-idstring = "63abe2dc0d5e30820ff6a91e"
+idstring = "637eec1cfa87b813690f0f64"
 char_id, invalid_label, order_label = model.get_doc(idstring=idstring)
 user_wd = model.get_user(idstring)
 std_wd = model.get_std(char_id)
