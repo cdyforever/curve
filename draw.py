@@ -41,7 +41,7 @@ class inter:
         return
     
     def drawv2(self, saveFlag, save_sub_dir):
-        save_dir = os.path.join("result", save_sub_dir)
+        save_dir = os.path.join("../result", save_sub_dir)
         if not os.path.exists(save_dir):
             os.mkdir(save_dir)
         save_x_dir = os.path.join(save_dir, saveFlag)
@@ -143,7 +143,7 @@ class inter:
                 if i >= len(ratios):
                     ratio = 0
                 else:
-                    ratio = 1.0
+                    ratio = ratios[i]
                 user_length = user_stro_feat.length
                 std_length = std_stro_feat.length
                 user_frag_ratio = u_segs_ratio[i]
