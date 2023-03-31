@@ -11,7 +11,7 @@ from calligraphy_evaluation.functions.algorithm.geom_feat.get_stroke_feat import
 from calligraphy_evaluation.functions.algorithm.param import GEOM_PIX_T
 from rotate import rotate_array, track_sample_hist
 import time
-from bend import STROKE_SAMPLE_NUM
+from bend import SEG_MULTI_COEFF
 
 class GetStrokeCurvature(object):
 

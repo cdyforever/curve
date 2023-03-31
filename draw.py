@@ -145,7 +145,7 @@ class inter:
         u_segs_ratio, u_segs_radian, u_segs_curv, s_segs_ratio, s_segs_radian, s_segs_curv = m_result
         self.user_mat = user_wd.stacked_mat[stroke_idx]
         self.std_mat = std_wd.stacked_mat[stroke_idx]
-        ratios = STROKE_SAMPLE_NUM[stroke_label]
+        ratios = SEG_MULTI_COEFF[stroke_label]
         self.savename = string_id + "_{}.jpg".format(idx)
         self.grade = []
         save_sub_dir = str(stroke_ids_dict[stroke_label])

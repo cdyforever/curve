@@ -18,4 +18,4 @@ std_wd = model.get_std(char_id)
 import cv2
 cv2.imwrite("user.jpg", user_wd.mat)
 cv2.imwrite("std.jpg", std_wd.mat)
-inter.single_stroke(string_id=idstring, user_wd=user_wd, std_wd=std_wd, stroke_idx=2)
+inter.single_stroke(string_id=idstring, user_wd=user_wd, std_wd=std_wd, stroke_idx=3)
