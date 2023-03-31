@@ -9,9 +9,9 @@ from calligraphy_evaluation.functions.preprocess.custom_type.feature import Stro
 from utils import euclidean_distance, get_project_length, get_dot2line_dist, get_vector_radian, get_focus, detach_pix_from_mat
 from calligraphy_evaluation.functions.algorithm.geom_feat.get_stroke_feat import CornerDetector
 from calligraphy_evaluation.functions.algorithm.param import GEOM_PIX_T
-from rotate import get_rotation_matrix, horizontal_track, track_sample_hist
+from rotate import rotate_array, track_sample_hist
 import time
-from bend import STROKE_SAMPLE_NUM
+from bend import SEG_MULTI_COEFF
 
 class GetStrokeCurvature(object):
 
@@ -57,8 +57,7 @@ class GetStrokeCurvature(object):
         seg_track_xy = track[:, ::-1]
         if (seg_track_xy[0] == seg_track_xy[-1]).all():
             return np.zeros((1, 20), dtype=np.float32)
-        matrix = get_rotation_matrix(seg_track_xy)
-        seg_horizon = horizontal_track(seg_track_xy, matrix)
+        seg_horizon = rotate_array(seg_track_xy)
         curv_hist = track_sample_hist(seg_horizon, 20)
         return curv_hist
 
@@ -168,3 +167,29 @@ class GetStrokeFeature(object):
                                         curvature=result['curvature'])
             results.append(stroke_feat)
         return results
+    
+    def single(self, stroke_wd, string):
+        print("from ", string)
+        track = stroke_wd.array[:, :2]
+        corners = self.corner_detect.get_corners(stroke_wd)[0]
+        length, seg_len_ratios = self._get_lengths(stroke_wd.dm, corners)
+        # print("current length ratio is ", seg_len_ratios)
+        points_y, points_x = detach_pix_from_mat(stroke_wd.mat, self.pix_thresh)
+        curvature = self.get_stroke_curvature.get_curvature(stroke_wd, corners)
+        result = {
+            'stroke_idx': 0,
+            'radians': self._get_radians(track, corners),
+            'corners': corners,
+            'curvature': curvature,
+            'len_ratio': seg_len_ratios,
+            'length': length,
+            'focus': get_focus(points_y, points_x),
+        }
+        stroke_feat = StrokeFeature(stroke_idx=result['stroke_idx'],
+                                    stroke_len=result['length'],
+                                    focus=result['focus'],
+                                    radians=result['radians'],
+                                    ratios=result['len_ratio'],
+                                    corners=result['corners'],
+                                    curvature=result['curvature'])
+        return stroke_feat
