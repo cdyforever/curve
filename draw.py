@@ -75,10 +75,10 @@ class inter:
         mat = 255 - mat
         mat = cv2.resize(mat, (1024, 1024), interpolation=cv2.INTER_AREA)
         empty[:, :, 1] = mat
-        mat = self.std_mat
-        mat = 255 - mat
-        mat = cv2.resize(mat, (1024, 1024), interpolation=cv2.INTER_AREA)
-        empty[:, :, 2] = mat
+        # mat = self.std_mat
+        # mat = 255 - mat
+        # mat = cv2.resize(mat, (1024, 1024), interpolation=cv2.INTER_AREA)
+        # empty[:, :, 2] = mat
         for idx in range(len(self.grade)):
             grade = self.grade[idx]
             cv2.putText(empty, str(int(grade * 100)), (100, 300 + idx * 100), cv2.FONT_HERSHEY_SIMPLEX, 2.0, (0, 0, 255), 3)
@@ -143,10 +143,11 @@ class inter:
         m_status, m_segs, m_result, head_status, rear_status = \
             self.eval._get_match_status(user_stroke_feat, std_stroke_feat, stroke_label)            
         u_segs_ratio, u_segs_radian, u_segs_curv, s_segs_ratio, s_segs_radian, s_segs_curv = m_result
+        print(m_segs)
         self.user_mat = user_wd.stacked_mat[stroke_idx]
         self.std_mat = std_wd.stacked_mat[stroke_idx]
         ratios = SEG_MULTI_COEFF[stroke_label]
-        self.savename = string_id + "_{}.jpg".format(idx)
+        self.savename = string_id + "_{}.jpg".format(stroke_idx)
         self.grade = []
         save_sub_dir = str(stroke_ids_dict[stroke_label])
         for i in range(len(u_segs_curv)):
@@ -164,6 +165,7 @@ class inter:
                                                 std_curv=s_segs_curv[i],
                                                 frag_length=user_frag_length,
                                                 seg_multi=ratio)
+            self.delta_curv = delta_curv
             self.grade.append(grade_func(delta_curv=delta_curv))
         print("final grad : ", self.grade)
         if min(self.grade) < 0.6:
@@ -171,4 +173,4 @@ class inter:
         else:
             saveFlag = "G"
         self.drawv3(saveFlag, save_sub_dir)
-        return
+        return self.delta_curv

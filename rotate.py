@@ -19,6 +19,12 @@ def rotate_array(track_array):
     """
     track_x_array = track_array[:, 0]
     track_y_array = track_array[:, 1]
+    x_range = max(track_x_array) - min(track_x_array)
+    y_range = max(track_y_array) - min(track_y_array)
+    if y_range > x_range * 2:
+        track_array = track_array[:, ::-1]
+        track_x_array = track_array[:, 0]
+        track_y_array = track_array[:, 1]
     param_start = [1.0, 1.0]
     Para = leastsq(leastsq_error, param_start, args=(track_x_array, track_y_array))
     k, b = Para[0]
@@ -64,25 +70,9 @@ def track_sample_hist(track_array, sample_num):
     sample_x_list = sample_x_array.tolist()
     sample_y_base_list = np.linspace(track_y_start, track_y_end, num=sample_num, endpoint=True).tolist()
     sample_y_list = interp_func(sample_x_list)
-    sample_hist = sample_y_list - sample_y_base_list
+    sample_hist = (sample_y_list - sample_y_base_list) / (track_x_end - track_x_start)
+    print("sample_hist ", sample_hist)
     return sample_hist
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

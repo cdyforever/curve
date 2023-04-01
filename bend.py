@@ -44,7 +44,7 @@ def compute_bend(user_curv, std_curv, frag_length, seg_multi = 1.0,
     delta_curv_undiff = np.sum(np.abs(user_curv + std_curv))
     delta_curv_self = np.sum(np.abs(user_curv))
     curv_result = min(delta_curv_diff, delta_curv_undiff, delta_curv_self)
-    curv_result = curv_result * math.pow(frag_length, 0.9)
+    curv_result = curv_result * math.pow(frag_length, 1.5)
     curv_result = curv_result * seg_multi
     curv_fit_label = True if np.mean(curv_result) < curv_fit_t else False
     # curv_direct_label = True if accum_curv >= delta_curv else False
